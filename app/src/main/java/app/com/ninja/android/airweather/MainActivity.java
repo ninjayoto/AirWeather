@@ -50,12 +50,13 @@ public class MainActivity extends AppCompatActivity {
         code = (EditText) findViewById(R.id.code);
         go = (Button) findViewById(R.id.go);
 
-        if (lastrequested!="none") {
+//        if (lastrequested!="none") {
+//
+////              Display Last requested Data
+//            airportRequest = lastrequested;
+//            getdata();
+//        }
 
-//              Display Last requested Data
-            airportRequest = lastrequested;
-            getdata();
-        }
 
         go.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -63,16 +64,23 @@ public class MainActivity extends AppCompatActivity {
                     airportRequest = code.getText().toString();
 
                     getdata();
-                }else {
-                    Snackbar.make(name, "Please enter a valid airport code", Snackbar.LENGTH_LONG).show();
-
                 }
             }
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-    
+        if (lastrequested!="none") {
+
+//              Display Last requested Data
+            airportRequest = lastrequested;
+            getdata();
+        }
+    }
+
     public void getdata() {
 
         GeoApi.Factory.getInstance().displayWeather(airportRequest,"sdkteam").enqueue(new Callback<GeoNames>() {
@@ -98,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences.Editor prefsEditor = myPrefs.edit();
                 prefsEditor.putString(SAVED_AIRPORT, airportRequest);
                 prefsEditor.commit();
+
+                code.setText("");
 
             }else{
                 Snackbar.make(name, "Can't find \"" + airportRequest + "\" Please enter a correct airport code", Snackbar.LENGTH_LONG).show();
